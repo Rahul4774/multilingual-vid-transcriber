@@ -1,0 +1,11 @@
+.venv/
+.langgraph_api/
+.env
+*.mp3
+*.log
+*.toml
+*.json
+test.py
+__pycache__/
+*.py[cod]
+*$py.class
