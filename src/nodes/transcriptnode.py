@@ -14,6 +14,7 @@ class TranscriptNode:
 
     def UserInputNode(self,state:VideoAgentState):
         try:
+            print('user input node entry')
             if state.get("error", None) is not None:
                 return state
             if not state.get("videoinput") or state.get("videoinput") == "":
@@ -43,6 +44,8 @@ class TranscriptNode:
             # print(traceback.print_exc())
             state["error"] = ErrorState(error=f"Failed to get user input: {e}",status=500,message="User input failed")
             return state
+        finally:
+            print('user input node exit')
         
     def VideoDataFetcherNode(self, state: VideoAgentState):
         try:
@@ -53,7 +56,8 @@ class TranscriptNode:
             video_state = None
             # Download video data into memory
             ydl_opts = {
-                "format": "bestaudio/best",
+                # "format": "bestaudio/best",
+                "format": "best[height<=480]/bestvideo[height<=480]+bestaudio",
                 "quiet": True,
                 "noplaylist": True
                 }

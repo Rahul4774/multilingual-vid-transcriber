@@ -5,6 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from src.graphs.graphbuilder import GraphBuilder
 from src.llms.groqllm import GroqModel, AudioToTextGroqModel
+from src.models.routemodels import bloggenerationRequest, videotranscriptRequest
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -17,11 +18,9 @@ def read_root():
     return {"Hello": "World"}
 
 @app.post("/blog")
-async def blog_generation(request:Request):
-    data = await request.json()
-    # print(dict(request))
-    topic = data.get("topic", None)
-    language = data.get("language", "English")
+async def blog_generation(payload:bloggenerationRequest):
+    topic = payload.topic
+    language = payload.language
     chatmodel = GroqModel().get_model()
     model = AudioToTextGroqModel().get_model()
     graphBuilder = GraphBuilder(chatmodel,model)
@@ -39,9 +38,9 @@ async def blog_generation(request:Request):
         return JSONResponse(status_code=200, content={"status":400, "message":"Topic is required", "text":None})
     
 @app.post("/videotranscript")
-async def video_transcript(request:Request):
-    data = await request.json()
-    user_input = data.get("user_input", None)
+async def video_transcript(payload:videotranscriptRequest):
+    user_input = payload.user_input
+    print(user_input)
     chatmodel = GroqModel().get_model()
     model = AudioToTextGroqModel().get_model()
     graph_builder = GraphBuilder(chatmodel,model)
